@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+requests
+pydantic
+slowapi
+jinja2
+python-multipart
+transformers

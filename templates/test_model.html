@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Model with Token</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        textarea, button { width: 100%; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h2>Test Model with Token</h2>
+
+    <label for="token">Token:</label>
+    <input type="text" id="token" placeholder="Enter your token"><br>
+
+    <label for="user-input">Your Message:</label>
+    <textarea id="user-input" rows="4" placeholder="Type your question here..."></textarea><br>
+
+    <button onclick="testModel()">Submit</button>
+
+    <h3>Response:</h3>
+    <pre id="response-output"></pre>
+
+    <script>
+        const API_URL = 'http://localhost:8000/proxy/';
+
+        async function testModel() {
+            const token = document.getElementById('token').value;
+            const userInput = document.getElementById('user-input').value;
+
+            if (!token || !userInput) {
+                alert("Please provide both token and input.");
+                return;
+            }
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: userInput }]
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('response-output').textContent = data.response;
+            } else {
+                const error = await response.json();
+                document.getElementById('response-output').textContent = `Error: ${error.detail}`;
+            }
+        }
+    </script>
+</body>
+</html>
