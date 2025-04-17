@@ -79,7 +79,7 @@ app.include_router(proxy_router)
 app.include_router(admin_router)
 
 # To protect from invalid host headers or unauthorized routes (example)
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.yourdomain.com"])
+# app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.yourdomain.com"])
 
 # Optionally, configure logging
 logging.basicConfig(level=logging.INFO)
