@@ -5,8 +5,8 @@ from rate_limiter import check_rate_limit
 from db import get_db
 
 # Load model & tokenizer once when the server starts
-tokenizer = AutoTokenizer.from_pretrained("MBZUAI-Paris/Atlas-Chat-9B")
-model = AutoModelForCausalLM.from_pretrained("MBZUAI-Paris/Atlas-Chat-9B")
+tokenizer = AutoTokenizer.from_pretrained("MBZUAI-Paris/Atlas-Chat-2B")
+model = AutoModelForCausalLM.from_pretrained("MBZUAI-Paris/Atlas-Chat-2B")
 pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 router = APIRouter()
