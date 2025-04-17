@@ -50,6 +50,8 @@ import logging
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Restrict in production
@@ -62,7 +64,7 @@ app.add_middleware(
 init_db()
 
 # Create FastAPI app instance
-app = FastAPI()
+
 
 # Register templates folder
 templates = Jinja2Templates(directory="templates")
