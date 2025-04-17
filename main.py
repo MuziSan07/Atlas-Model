@@ -48,6 +48,15 @@ from fastapi.responses import HTMLResponse
 from fastapi import Request
 import logging
 import os
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Restrict in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize the database (tables)
 init_db()
