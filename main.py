@@ -59,7 +59,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 # Static files setup (if you have CSS or JS to serve)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Middleware to log all requests
 @app.middleware("http")
