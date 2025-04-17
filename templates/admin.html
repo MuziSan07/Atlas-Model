@@ -1,134 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Token Management</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        h2 { color: #333; }
-        input, button { margin: 10px 0; padding: 8px; }
-        .token-table { width: 100%; border-collapse: collapse; }
-        .token-table th, .token-table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Token Management</title>
+  <style>
+    :root {
+      --bg-dark: #0e0e0e;
+      --card-dark: #161616;
+      --border-dark: #2a2a2a;
+      --text-light: #f0f0f0;
+      --accent: #00ffd5;
+      --danger: #ff4d4d;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h2, h3 {
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background-color: var(--card-dark);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.05);
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #bbb;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-dark);
+      background-color: #1e1e1e;
+      color: var(--text-light);
+      font-size: 15px;
+    }
+
+    button {
+      background-color: var(--accent);
+      border: none;
+      font-weight: bold;
+      color: #000;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00c2a8;
+    }
+
+    table.token-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--card-dark);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    }
+
+    table th, table td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    table th {
+      background-color: #1e1e1e;
+      color: #bbb;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .action-btn {
+      background-color: #444;
+      color: #fff;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .action-btn:hover {
+      background-color: #666;
+    }
+
+    .action-btn.danger {
+      background-color: var(--danger);
+    }
+
+    .action-btn.danger:hover {
+      background-color: #e60000;
+    }
+  </style>
 </head>
 <body>
-    <h2>Token Management</h2>
+  <h2>Token Management</h2>
 
-    <form id="create-token-form">
-        <label for="tier">Tier:</label>
-        <select id="tier" name="tier">
-            <option value="free">Free</option>
-            <option value="premium">Premium</option>
-        </select><br>
-        
-        <label for="rate-limit">Rate Limit (requests/min):</label>
-        <input type="number" id="rate-limit" name="rate-limit" value="60"><br>
-        
-        <button type="submit">Create Token</button>
-    </form>
+  <form id="create-token-form">
+    <label for="tier">Tier:</label>
+    <select id="tier" name="tier">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
 
-    <h3>Existing Tokens</h3>
-    <table class="token-table" id="tokens-table">
-        <thead>
-            <tr>
-                <th>Token</th>
-                <th>Tier</th>
-                <th>Rate Limit</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Tokens will be listed here -->
-        </tbody>
-    </table>
+    <label for="rate-limit">Rate Limit (requests/min):</label>
+    <input type="number" id="rate-limit" name="rate-limit" value="60" />
 
-    <script>
-        const API_URL = 'http://localhost:8000/admin/';
-        
-        // Create token and append to table
-        document.getElementById('create-token-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const tier = document.getElementById('tier').value;
-            const rateLimit = document.getElementById('rate-limit').value;
+    <button type="submit">Create Token</button>
+  </form>
 
-            const response = await fetch(API_URL + 'token/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tier, rate_limit: rateLimit }),
-            });
+  <h3>Existing Tokens</h3>
+  <table class="token-table" id="tokens-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Tier</th>
+        <th>Rate Limit</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Tokens will be listed here -->
+    </tbody>
+  </table>
 
-            const data = await response.json();
-            const token = data.token;
-            if (token) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${token}</td>
-                    <td>${tier}</td>
-                    <td>${rateLimit}</td>
-                    <td>
-                        <button onclick="revokeToken('${token}')">Revoke</button>
-                        <button onclick="restoreToken('${token}')">Restore</button>
-                        <button onclick="deleteToken('${token}')">Delete</button>
-                    </td>
-                `;
-                document.querySelector('#tokens-table tbody').appendChild(row);
-            }
-        });
+  <script>
+    const API_URL = 'http://localhost:8000/admin/';
 
-        // Revoke token
-        async function revokeToken(token) {
-            await fetch(API_URL + 'revoke/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token }),
-            });
-            alert('Token revoked');
-        }
+    document.getElementById('create-token-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const tier = document.getElementById('tier').value;
+      const rateLimit = document.getElementById('rate-limit').value;
 
-        // Restore token
-        async function restoreToken(token) {
-            await fetch(API_URL + 'restore/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token }),
-            });
-            alert('Token restored');
-        }
+      const response = await fetch(API_URL + 'token/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier, rate_limit: rateLimit }),
+      });
 
-        // Delete token
-        async function deleteToken(token) {
-            await fetch(API_URL + 'token/', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token }),
-            });
-            alert('Token deleted');
-        }
+      const data = await response.json();
+      const token = data.token;
+      if (token) {
+        addTokenRow(token, tier, rateLimit);
+      }
+    });
 
-        // Fetch and display tokens
-        async function fetchTokens() {
-            const response = await fetch(API_URL + 'logs/');
-            const data = await response.json();
-            const tokens = data.logs; // Adjust if needed
-            tokens.forEach(token => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${token.token}</td>
-                    <td>${token.tier}</td>
-                    <td>${token.rate_limit}</td>
-                    <td>
-                        <button onclick="revokeToken('${token.token}')">Revoke</button>
-                        <button onclick="restoreToken('${token.token}')">Restore</button>
-                        <button onclick="deleteToken('${token.token}')">Delete</button>
-                    </td>
-                `;
-                document.querySelector('#tokens-table tbody').appendChild(row);
-            });
-        }
+    function addTokenRow(token, tier, rateLimit) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${token}</td>
+        <td>${tier}</td>
+        <td>${rateLimit}</td>
+        <td>
+          <button class="action-btn" onclick="revokeToken('${token}')">Revoke</button>
+          <button class="action-btn" onclick="restoreToken('${token}')">Restore</button>
+          <button class="action-btn danger" onclick="deleteToken('${token}')">Delete</button>
+        </td>
+      `;
+      document.querySelector('#tokens-table tbody').appendChild(row);
+    }
 
-        // Initialize the token table on load
-        window.onload = fetchTokens;
-    </script>
+    async function revokeToken(token) {
+      await fetch(API_URL + 'revoke/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      alert('Token revoked');
+    }
+
+    async function restoreToken(token) {
+      await fetch(API_URL + 'restore/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      alert('Token restored');
+    }
+
+    async function deleteToken(token) {
+      await fetch(API_URL + 'token/', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      alert('Token deleted');
+    }
+
+    async function fetchTokens() {
+      const response = await fetch(API_URL + 'logs/');
+      const data = await response.json();
+      const tokens = data.logs;
+      tokens.forEach(token => {
+        addTokenRow(token.token, token.tier, token.rate_limit);
+      });
+    }
+
+    window.onload = fetchTokens;
+  </script>
 </body>
 </html>
